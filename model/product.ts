@@ -22,9 +22,22 @@ function getProductsFromFile(cb: (products: ProductType[]) => void): void {
 
 export class Product {
   title: string;
+  imageUrl: string;
+  description: string;
+  price: number;
 
-  constructor(t: string) {
-    this.title = t;
+  constructor(product: {
+    title: string;
+    imageUrl: string;
+    description: string;
+    price: number;
+  }) {
+    {
+      this.title = product.title;
+      this.imageUrl = product.imageUrl;
+      this.description = product.description;
+      this.price = product.price;
+    }
   }
 
   save() {

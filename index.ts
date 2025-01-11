@@ -2,8 +2,8 @@ import express from 'express';
 
 import { getNotFound } from './controllers/404.ts';
 
-import { Router as shopRoutes } from './routes/shop.ts';
-import { Router as adminRoutes } from './routes/admin.ts';
+import { Router as shopRoutes } from './routes/shop-routes.ts';
+import { Router as adminRoutes } from './routes/admin-routes.ts';
 
 const app = express();
 const port = 3000;
