@@ -2,44 +2,38 @@ form {
   width: 30rem;
   max-width: 90%;
   margin: auto;
+}
 
-  .form-control {
-    margin: 1rem 0;
+.form-control {
+  margin: 1rem 0;
+}
 
-    label,
-    input,
-    textarea {
-      display: block;
-      width: 100%;
-      margin-bottom: 0.25rem;
-    }
+.form-control label,
+.form-control input,
+.form-control textarea {
+  display: block;
+  width: 100%;
+  margin-bottom: 0.25rem;
+}
 
-    input,
-    textarea {
-      border: 1px solid #a1a1a1;
-      font: inherit;
-      border-radius: 2px;
+.form-control input,
+.form-control textarea {
+  border: 1px solid #a1a1a1;
+  font: inherit;
+  border-radius: 2px;
+}
 
-      &:focus,
-      &:focus {
-        outline: 1px solid #00695c;
-      }
-    }
-  }
+.form-control input:focus,
+.form-control textarea:focus {
+  outline: none;
+}
 
-  button {
-    font: inherit;
-    border: 1px solid #074e5a;
-    color: #074e5a;
-    background-color: white;
-    border-radius: 3px;
-    cursor: pointer;
-    padding: 5px 10px;
-
-    &:hover,
-    &:active {
-      background-color: #074e5a;
-      color: white;
-    }
+button:disabled {
+  color: gray;
+  border-color: gray;
+  &:hover {
+    background-color: transparent;
+    color: gray;
+    cursor: not-allowed;
   }
 }

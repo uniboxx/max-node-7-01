@@ -1,4 +1,5 @@
 import express from 'express';
+const { xss } = require('express-xss-sanitizer');
 
 import { getNotFound } from './controllers/404.ts';
 
@@ -12,6 +13,8 @@ app.set('view engine', 'ejs');
 app.set('views', 'views');
 
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(xss());
 app.use(express.static('public'));
 
 app.use(shopRoutes);
