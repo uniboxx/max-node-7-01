@@ -4,28 +4,6 @@
 <body>
   <%- include('../includes/navigation.ejs') %>
   <main class="centered">
-    <h1>Cart</h1>
-    <hr>
-    <table>
-      <thead>
-        <tr>
-          <td>Price</td>
-          <td>Quantity</td>
-          <td>Total Price</td>
-        </tr>
-      </thead>
-      <% for (let cartProduct of cart.products) { %>
-      <tr>
-        <td><%=  %></td>
-        <td><%= cartProduct.quantity %></td>
-        <td><%=  %></td>
-      </tr>
-      <% } %>
-      <tr>
-        <td></td>
-        <td></td>
-        <td><%= cart.totalPrice.toString().padEnd(5,'0') %></td>
-      </tr>
-    </table>
+    <h1>Under construction</h1>
   </main>
   <%- include('../includes/end.ejs') %>
