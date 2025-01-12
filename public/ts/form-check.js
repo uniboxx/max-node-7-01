@@ -57,9 +57,8 @@ formEl?.addEventListener('submit', function (e) {
       },
       body: JSON.stringify(data),
     };
-    fetch(url, options).then((err) => {
-      window.location.href = '/products';
-    });
+    fetch(url, options);
+    window.location.href = '/products';
   } catch (err) {
     console.log(err.message);
   }
