@@ -42,7 +42,7 @@ allInputs.forEach((inputEl) => {
   });
 });
 
-formEl?.addEventListener('submit', function (e) {
+formEl?.addEventListener('submit', async function (e) {
   e.preventDefault();
   const data = Object.fromEntries(new FormData(this));
 
@@ -56,9 +56,11 @@ formEl?.addEventListener('submit', function (e) {
         'Content-type': 'application/json',
       },
       body: JSON.stringify(data),
+      redirect: 'manual',
     };
-    fetch(url, options);
-    window.location.href = '/products';
+    fetch(url, options).then((res) => {
+      window.location.href = '/products';
+    });
   } catch (err) {
     console.log(err.message);
   }

@@ -30,7 +30,8 @@ export function addProduct(req: Request, res: Response) {
 
   const product = new Product({ title, imageUrl, description, price });
   product.save();
-  console.log('saved');
+
+  res.redirect('/products');
 }
 
 export function getEditProduct(req: Request, res: Response) {
