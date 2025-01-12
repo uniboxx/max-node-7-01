@@ -1,6 +1,5 @@
 import type { Request, Response } from 'express';
 import { Product } from '../model/product';
-import { nanoid } from 'nanoid';
 
 export function getProducts(_: Request, res: Response) {
   Product.fetchAll((products) => {
@@ -42,6 +41,7 @@ export function getEditProduct(req: Request, res: Response) {
   const productId = req.params.productId;
   console.log(productId);
   Product.findById(productId, (product) => {
+    console.log(product);
     res.render('admin/edit-product', {
       product,
       pageTitle: `Edit ${product?.title}`,
