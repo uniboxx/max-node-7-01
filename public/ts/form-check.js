@@ -1,7 +1,7 @@
 const formEl = document.querySelector('form');
 const inputEls = document.querySelectorAll('input');
 const textareaEls = document.querySelectorAll('textarea');
-const btnEl = document.querySelector('form button');
+const btnEl = document.querySelector('form button[type="submit"]');
 
 const allInputs = Array.from([...inputEls, ...textareaEls]);
 
@@ -44,7 +44,9 @@ allInputs.forEach((inputEl) => {
 
 formEl?.addEventListener('submit', async function (e) {
   e.preventDefault();
+
   const data = Object.fromEntries(new FormData(this));
+  console.log(data);
 
   try {
     const params = new URLSearchParams(document.location.search);
@@ -56,11 +58,11 @@ formEl?.addEventListener('submit', async function (e) {
         'Content-type': 'application/json',
       },
       body: JSON.stringify(data),
-      redirect: 'manual',
     };
-    fetch(url, options).then((res) => {
-      window.location.href = '/products';
-    });
+
+    const res = await fetch(url, options);
+    console.log(res);
+    window.location.href = edit ? '/admin/products' : '/products';
   } catch (err) {
     console.log(err.message);
   }

@@ -4,11 +4,11 @@ import { appDir } from '../utils/path';
 import { nanoid } from 'nanoid';
 
 interface ProductType {
+  id: string | null;
   title: string;
   imageUrl: string;
   description: string;
   price: number;
-  id: string;
 }
 const dataPath = path.join(appDir, 'data', 'products.json');
 
@@ -26,33 +26,40 @@ function getProductsFromFile(cb: (products: ProductType[]) => void): void {
 }
 
 export class Product {
+  id: string | null;
   title: string;
   imageUrl: string;
   description: string;
   price: number;
-  id: string;
 
-  constructor(product: {
-    title: string;
-    imageUrl: string;
-    description: string;
-    price: number;
-  }) {
+  constructor(product: ProductType) {
     {
+      this.id = product.id;
       this.title = product.title;
       this.imageUrl = product.imageUrl;
       this.description = product.description;
       this.price = product.price;
-      this.id = nanoid();
     }
   }
 
   save() {
     getProductsFromFile((products) => {
-      products.push(this);
-      fs.writeFile(dataPath, JSON.stringify(products), (err) => {
-        err && console.log(err);
-      });
+      if (this.id) {
+        const existingProductIndex = products.findIndex(
+          (product) => product.id === this.id
+        );
+        const updatedProducts = [...products];
+        updatedProducts[existingProductIndex] = this;
+        fs.writeFile(dataPath, JSON.stringify(updatedProducts), (err) => {
+          err && console.log(err);
+        });
+      } else {
+        this.id = nanoid();
+        products.push(this);
+        fs.writeFile(dataPath, JSON.stringify(products), (err) => {
+          err && console.log(err);
+        });
+      }
     });
   }
 

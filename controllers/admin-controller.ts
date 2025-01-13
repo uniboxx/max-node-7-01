@@ -27,10 +27,16 @@ export function addProduct(req: Request, res: Response) {
     return;
   }
 
-  const product = new Product({ title, imageUrl, description, price });
+  const product = new Product({
+    id: null,
+    title,
+    imageUrl,
+    description,
+    price,
+  });
   product.save();
 
-  res.redirect('/products');
+  res.status(201).end();
 }
 
 export function getEditProduct(req: Request, res: Response) {
@@ -39,9 +45,8 @@ export function getEditProduct(req: Request, res: Response) {
     return res.redirect('/');
   }
   const productId = req.params.productId;
-  console.log(productId);
+
   Product.findById(productId, (product) => {
-    console.log(product);
     res.render('admin/edit-product', {
       product,
       pageTitle: `Edit ${product?.title}`,
@@ -52,10 +57,16 @@ export function getEditProduct(req: Request, res: Response) {
 }
 
 export function editProduct(req: Request, res: Response) {
-  const { title, imageUrl, description, price } = req.body;
-  const productId = req.params.productId;
-  Product.findById(productId, (product) => {
-    const updatedProduct = { ...product, title, imageUrl, description, price };
+  const { productId: id, title, imageUrl, description, price } = req.body;
+
+  const updatedProduct = new Product({
+    id,
+    title,
+    imageUrl,
+    description,
+    price,
   });
-  res.redirect('/');
+
+  updatedProduct.save();
+  res.status(204).end();
 }
