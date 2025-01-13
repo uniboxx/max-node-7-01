@@ -115,6 +115,9 @@ export class Cart {
       const product = updatedCart.products.find(
         (product: Product) => product.id === id
       );
+      if (!product) {
+        return;
+      }
       const productQty = product.quantity;
       updatedCart.products = updatedCart.products.filter(
         (product: Product) => product.id !== id
