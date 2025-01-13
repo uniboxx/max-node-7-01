@@ -1,1 +1,8 @@
-{"products":[{"id":"N-ob3a8e9xNDYQxJS8-Pz","quantity":2},{"id":"Z462IZvKaid4YUH0a4EI7","quantity":2},{"id":"rTuzNTSDs0mCnxvY7E4g-","quantity":1}],"totalPrice":171.19}
+{
+  "products": [
+    { "id": "N-ob3a8e9xNDYQxJS8-Pz", "quantity": 2 },
+    { "id": "Z462IZvKaid4YUH0a4EI7", "quantity": 2 },
+    { "id": "rTuzNTSDs0mCnxvY7E4g-", "quantity": 1 }
+  ],
+  "totalPrice": 171.19
+}

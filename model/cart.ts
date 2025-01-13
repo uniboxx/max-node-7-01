@@ -57,6 +57,54 @@ export class Cart {
     });
   }
 
+  static subtractProduct(id: string, productPrice: number) {
+    // fetch the previous cart
+    fs.readFile(dataPath, (err, fileContent) => {
+      if (!err) {
+        const cart = JSON.parse(fileContent.toString());
+        const exintingProductIndex = cart.products.findIndex(
+          (product: Product) => product.id === id
+        );
+        const existingProduct = cart.products[exintingProductIndex];
+
+        const updatedProduct = { ...existingProduct };
+        updatedProduct.quantity--;
+        cart.products[exintingProductIndex] = updatedProduct;
+        // analize the cart => find existing product
+
+        cart.totalPrice =
+          Math.ceil((+cart.totalPrice - productPrice) * 100) / 100;
+        fs.writeFile(dataPath, JSON.stringify(cart), (err) => {
+          console.log(err);
+        });
+      }
+    });
+  }
+
+  static additionProduct(id: string, productPrice: number) {
+    // fetch the previous cart
+    fs.readFile(dataPath, (err, fileContent) => {
+      if (!err) {
+        const cart = JSON.parse(fileContent.toString());
+        const exintingProductIndex = cart.products.findIndex(
+          (product: Product) => product.id === id
+        );
+        const existingProduct = cart.products[exintingProductIndex];
+
+        const updatedProduct = { ...existingProduct };
+        updatedProduct.quantity++;
+        cart.products[exintingProductIndex] = updatedProduct;
+        // analize the cart => find existing product
+
+        cart.totalPrice =
+          Math.ceil((+cart.totalPrice + +productPrice) * 100) / 100;
+        fs.writeFile(dataPath, JSON.stringify(cart), (err) => {
+          console.log(err);
+        });
+      }
+    });
+  }
+
   static deleteProduct(id: string, productPrice: number) {
     fs.readFile(dataPath, (err, fileContent) => {
       if (err) {

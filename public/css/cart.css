@@ -17,22 +17,54 @@ table {
       background-color: dodgerblue;
       color: white;
       font-weight: bold;
+      th {
+        padding: 10px 20px;
+      }
     }
   }
 
   tbody {
     tr {
       td {
-        &:last-child {
-          text-align: right;
-        }
+        text-align: right;
+
         &:first-child {
           text-align: left;
         }
+        &:nth-child(3) {
+          display: flex;
+          justify-content: end;
+          gap: 5px;
+
+          .quantity {
+            margin-left: auto;
+          }
+          .subtract,
+          .add {
+            cursor: pointer;
+          }
+          .subtract {
+            margin-left: 0.5rem;
+          }
+        }
       }
-      &:last-child {
-        td:nth-child(3) {
+
+      &:nth-child(even) {
+        background-color: lightgray;
+      }
+    }
+  }
+  tfoot {
+    tr {
+      background-color: goldenrod;
+      td {
+        &:nth-child(3) {
           text-align: left;
+        }
+        &:last-child {
+          text-align: right;
+          font-weight: bold;
+          font-size: 1.2rem;
         }
       }
     }

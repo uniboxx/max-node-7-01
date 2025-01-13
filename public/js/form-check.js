@@ -46,7 +46,6 @@ formEl?.addEventListener('submit', async function (e) {
   e.preventDefault();
 
   const data = Object.fromEntries(new FormData(this));
-  console.log(data);
 
   try {
     const params = new URLSearchParams(document.location.search);
@@ -61,7 +60,6 @@ formEl?.addEventListener('submit', async function (e) {
     };
 
     const res = await fetch(url, options);
-    console.log(res);
     window.location.href = edit ? '/admin/products' : '/products';
   } catch (err) {
     console.log(err.message);
