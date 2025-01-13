@@ -2,8 +2,9 @@ import fs from 'fs';
 import path from 'path';
 import { appDir } from '../utils/path';
 import { nanoid } from 'nanoid';
+import { Cart } from './cart';
 
-interface ProductType {
+export interface ProductType {
   id: string | null;
   title: string;
   imageUrl: string;
@@ -77,10 +78,11 @@ export class Product {
 
   static deleteById(id: string): void {
     getProductsFromFile((products) => {
+      const product = products.find((product) => product.id === id);
       const updatedProducts = products.filter((product) => product.id !== id);
       fs.writeFile(dataPath, JSON.stringify(updatedProducts), (err) => {
-        if (!err) {
-          console.log('well done');
+        if (!err && product) {
+          Cart.deleteProduct(id, product.price);
         }
       });
     });

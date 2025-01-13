@@ -1,0 +1,40 @@
+table {
+  border-collapse: collapse;
+  border: 2px solid dodgerblue;
+  width: 30rem;
+  max-width: 90%;
+  margin: auto;
+
+  th,
+  td {
+    border: 1px solid gray;
+    text-align: center;
+    padding: 5px 10px;
+  }
+
+  thead {
+    tr {
+      background-color: dodgerblue;
+      color: white;
+      font-weight: bold;
+    }
+  }
+
+  tbody {
+    tr {
+      td {
+        &:last-child {
+          text-align: right;
+        }
+        &:first-child {
+          text-align: left;
+        }
+      }
+      &:last-child {
+        td:nth-child(3) {
+          text-align: left;
+        }
+      }
+    }
+  }
+}

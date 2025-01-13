@@ -1,5 +1,5 @@
 import type { Request, Response } from 'express';
-import { Product } from '../model/product';
+import { Product, type ProductType } from '../model/product';
 import { Cart } from '../model/cart';
 
 export function getIndex(_: Request, res: Response) {
@@ -34,11 +34,32 @@ export function getProduct(req: Request, res: Response) {
 }
 
 export function getCart(_: Request, res: Response) {
-  const cart = Cart.getCart();
-  res.render('shop/cart', {
-    cart,
-    pageTitle: 'Your Cart',
-    path: '/cart',
+  Cart.getCart((cart) => {
+    interface cartProductType {
+      productData: ProductType;
+      qty: number;
+    }
+    const cartProducts: cartProductType[] = [];
+    Product.fetchAll((products) => {
+      for (let product of products) {
+        const productData = cart.products.find(
+          (cartProduct) => cartProduct.id === product.id
+        );
+        if (productData) {
+          cartProducts.push({
+            productData: product,
+            qty: productData.quantity,
+          });
+        }
+      }
+      console.log(cartProducts);
+      res.render('shop/cart', {
+        products: cartProducts,
+        totalPrice: cart.totalPrice,
+        pageTitle: 'Your Cart',
+        path: '/cart',
+      });
+    });
   });
 }
 

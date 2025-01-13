@@ -8,12 +8,26 @@ interface Product {
   id: string;
   quantity: number;
 }
-let cart: { products: Product[]; totalPrice: number } = {
-  products: [],
-  totalPrice: 0,
-};
+interface CartType {
+  products: Product[];
+  totalPrice: number;
+}
 
 export class Cart {
+  static getCart(cb: (cart: CartType) => void): void {
+    fs.readFile(
+      dataPath,
+      (err: NodeJS.ErrnoException | null, fileContent: Buffer) => {
+        if (!err) {
+          const cart: CartType = JSON.parse(fileContent.toString());
+          cb(cart);
+        } else {
+          cb({ products: [], totalPrice: 0 });
+        }
+      }
+    );
+  }
+
   static addProduct(id: string, productPrice: number) {
     // fetch the previous cart
     fs.readFile(dataPath, (err, fileContent) => {
@@ -43,7 +57,25 @@ export class Cart {
     });
   }
 
-  static getCart() {
-    return cart;
+  static deleteProduct(id: string, productPrice: number) {
+    fs.readFile(dataPath, (err, fileContent) => {
+      if (err) {
+        return;
+      }
+      const cart = JSON.parse(fileContent.toString());
+      const updatedCart = { ...cart };
+      const product = updatedCart.products.find(
+        (product: Product) => product.id === id
+      );
+      const productQty = product.quantity;
+      updatedCart.products = updatedCart.products.filter(
+        (product: Product) => product.id !== id
+      );
+      updatedCart.totalPrice -= productQty * productPrice;
+
+      fs.writeFile(dataPath, JSON.stringify(updatedCart), (err) => {
+        err && console.log(err);
+      });
+    });
   }
 }
