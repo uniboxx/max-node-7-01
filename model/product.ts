@@ -35,9 +35,9 @@ export class Product {
   constructor(product: ProductType) {
     {
       this.id = product.id;
-      this.title = product.title;
-      this.imageUrl = product.imageUrl;
-      this.description = product.description;
+      this.title = product.title.trim();
+      this.imageUrl = product.imageUrl.trim();
+      this.description = product.description.trim();
       this.price = product.price;
     }
   }

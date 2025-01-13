@@ -24,7 +24,7 @@
       <tr>
         <td></td>
         <td></td>
-        <td><%= cart.totalPrice.toString().padEnd(5,'0') %></td>
+        <td><%= Number(cart.totalPrice).toFixed(2) %></td>
       </tr>
     </table>
   </main>
