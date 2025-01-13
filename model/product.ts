@@ -75,16 +75,14 @@ export class Product {
     });
   }
 
-  static deleteProduct(id: string): void {
+  static deleteById(id: string): void {
     getProductsFromFile((products) => {
-      const productIndex = products.findIndex((product) => product.id === id);
-      if (productIndex > -1) {
-        const updatedProducts = [...products];
-        updatedProducts.splice(productIndex, 1);
-        fs.writeFile(dataPath, JSON.stringify(updatedProducts), (err) => {
-          err && console.log(err);
-        });
-      }
+      const updatedProducts = products.filter((product) => product.id !== id);
+      fs.writeFile(dataPath, JSON.stringify(updatedProducts), (err) => {
+        if (!err) {
+          console.log('well done');
+        }
+      });
     });
   }
 }

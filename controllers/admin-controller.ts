@@ -72,8 +72,8 @@ export function editProduct(req: Request, res: Response) {
 }
 
 export function deleteProduct(req: Request, res: Response) {
-  const { productId } = req.params;
+  const { productId } = req.body;
 
-  Product.deleteProduct(productId);
+  Product.deleteById(productId);
   res.status(204).redirect('/admin/products');
 }
