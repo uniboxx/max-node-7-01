@@ -32,28 +32,28 @@ export class Cart {
     // fetch the previous cart
     fs.readFile(dataPath, (err, fileContent) => {
       if (!err) {
-        cart = JSON.parse(fileContent.toString());
+        const cart = JSON.parse(fileContent.toString());
+        const exintingProductIndex = cart.products.findIndex(
+          (product: Product) => product.id === id
+        );
+        const existingProduct = cart.products[exintingProductIndex];
+        let updatedProduct;
+        // add new product / increase quantity
+        if (existingProduct) {
+          updatedProduct = { ...existingProduct };
+          updatedProduct.quantity++;
+          cart.products[exintingProductIndex] = updatedProduct;
+          // analize the cart => find existing product
+        } else {
+          updatedProduct = { id, quantity: 1 };
+          cart.products = [...cart.products, updatedProduct];
+        }
+        cart.totalPrice =
+          Math.ceil((+cart.totalPrice + +productPrice) * 100) / 100;
+        fs.writeFile(dataPath, JSON.stringify(cart), (err) => {
+          console.log(err);
+        });
       }
-      // analize the cart => find existing product
-      const exintingProductIndex = cart.products.findIndex(
-        (product: Product) => product.id === id
-      );
-      const existingProduct = cart.products[exintingProductIndex];
-      let updatedProduct;
-      // add new product / increase quantity
-      if (existingProduct) {
-        updatedProduct = { ...existingProduct };
-        updatedProduct.quantity++;
-        cart.products[exintingProductIndex] = updatedProduct;
-      } else {
-        updatedProduct = { id, quantity: 1 };
-        cart.products = [...cart.products, updatedProduct];
-      }
-      cart.totalPrice =
-        Math.ceil((+cart.totalPrice + +productPrice) * 100) / 100;
-      fs.writeFile(dataPath, JSON.stringify(cart), (err) => {
-        console.log(err);
-      });
     });
   }
 
