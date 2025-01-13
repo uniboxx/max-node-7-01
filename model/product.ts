@@ -69,9 +69,22 @@ export class Product {
 
   static findById(id: string, cb: (product: ProductType | null) => void): void {
     getProductsFromFile((products) => {
-      const product = products.find((product) => product.id === id) || null;
+      const product = products.find((product) => product.id === id);
 
       product && cb(product);
+    });
+  }
+
+  static deleteProduct(id: string): void {
+    getProductsFromFile((products) => {
+      const productIndex = products.findIndex((product) => product.id === id);
+      if (productIndex > -1) {
+        const updatedProducts = [...products];
+        updatedProducts.splice(productIndex, 1);
+        fs.writeFile(dataPath, JSON.stringify(updatedProducts), (err) => {
+          err && console.log(err);
+        });
+      }
     });
   }
 }

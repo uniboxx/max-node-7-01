@@ -70,3 +70,10 @@ export function editProduct(req: Request, res: Response) {
   updatedProduct.save();
   res.status(204).end();
 }
+
+export function deleteProduct(req: Request, res: Response) {
+  const { productId } = req.params;
+
+  Product.deleteProduct(productId);
+  res.status(204).redirect('/admin/products');
+}
