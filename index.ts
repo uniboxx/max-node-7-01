@@ -29,6 +29,7 @@ sequelize
     // console.log(result);
     app.listen(port, () => {
       console.log(`✅ Server is running on http://localhost:${port}`);
+      console.log(`You are in ${Bun.env.NODE_ENV?.toUpperCase()} mode`);
     });
   })
   .catch((err) => console.error(err.message));

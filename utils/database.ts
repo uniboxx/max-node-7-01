@@ -7,9 +7,19 @@
 //   database: 'node_complete',
 //   password: 'qfmsprlp',
 // });
+
+const NODE_ENV = Bun.env.NODE_ENV;
+
 import { Sequelize } from 'sequelize';
 
-export const sequelize = new Sequelize('node_complete', 'daw', 'qfmsprlp', {
-  dialect: 'mariadb',
-  host: 'localhost',
-});
+console.log('database_name', Bun.env.DATABASE_NAME);
+
+export const sequelize = new Sequelize(
+  Bun.env.DATABASE_NAME!,
+  Bun.env.DATABASE_USERNAME!,
+  Bun.env.DATABASE_PASSWORD!,
+  {
+    dialect: 'mariadb',
+    host: Bun.env.DATABASE_HOST!,
+  }
+);
