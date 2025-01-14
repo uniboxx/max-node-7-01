@@ -24,7 +24,6 @@ async function updateCart(idx, operand) {
     url = '/cart-addition';
     totalPrice += productPrice;
   }
-  console.log(url);
 
   const data = { productId, productPrice };
   const options = {

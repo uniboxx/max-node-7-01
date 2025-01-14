@@ -5,6 +5,7 @@ import { getNotFound } from './controllers/404.ts';
 
 import { Router as shopRoutes } from './routes/shop-routes.ts';
 import { Router as adminRoutes } from './routes/admin-routes.ts';
+import { sequelize } from './utils/database.ts';
 
 const app = express();
 const port = 3000;
@@ -22,6 +23,12 @@ app.use(adminRoutes);
 
 app.use('/', getNotFound);
 
-app.listen(port, () => {
-  console.log(`✅ Server is running on http://localhost:${port}`);
-});
+sequelize
+  .sync()
+  .then((result) => {
+    // console.log(result);
+    app.listen(port, () => {
+      console.log(`✅ Server is running on http://localhost:${port}`);
+    });
+  })
+  .catch((err) => console.error(err.message));

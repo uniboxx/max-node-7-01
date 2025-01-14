@@ -13,9 +13,6 @@ body {
 main {
   padding: 1rem;
   margin: auto;
-  img {
-    width: 20rem;
-  }
 }
 
 /* form {
@@ -24,6 +21,13 @@ main {
 
 .centered {
   text-align: center;
+}
+
+.image {
+  height: 20rem;
+  img {
+    height: 100%;
+  }
 }
 
 .main-header {

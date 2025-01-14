@@ -1,14 +1,20 @@
 import type { Request, Response } from 'express';
-import { Product } from '../model/product';
+import { Product } from '../models/product';
 
 export function getProducts(_: Request, res: Response) {
-  Product.fetchAll((products) => {
-    res.render('admin/products', {
-      products,
-      pageTitle: 'Admin Products',
-      path: '/admin/products',
-    });
-  });
+  Product.findAll()
+    .then((products) => {
+      if (products.length) {
+        res.render('admin/products', {
+          products,
+          pageTitle: 'Admin Products',
+          path: '/admin/products',
+        });
+      } else {
+        res.status(404).send('No Products found');
+      }
+    })
+    .catch((err) => console.error(err.message));
 }
 
 export function getAddProduct(_: Request, res: Response) {
@@ -27,16 +33,17 @@ export function addProduct(req: Request, res: Response) {
     return;
   }
 
-  const product = new Product({
-    id: null,
+  Product.create({
     title,
     imageUrl,
     description,
     price,
-  });
-  product.save();
-
-  res.status(201).end();
+  })
+    .then((result) => {
+      console.log('PRODUCT CREATED');
+      res.status(204).redirect('/products');
+    })
+    .catch((err) => console.error(err.message));
 }
 
 export function getEditProduct(req: Request, res: Response) {
@@ -46,34 +53,64 @@ export function getEditProduct(req: Request, res: Response) {
   }
   const productId = req.params.productId;
 
-  Product.findById(productId, (product) => {
-    res.render('admin/edit-product', {
-      product,
-      pageTitle: `Edit ${product?.title}`,
-      path: '/admin/edit-product',
-      editing: editMode,
-    });
-  });
+  Product.findByPk(productId)
+    .then((product) => {
+      if (product) {
+        console.log(product);
+        res.render('admin/edit-product', {
+          product,
+          pageTitle: `Edit ${product.title}`,
+          path: '/admin/edit-product',
+          editing: editMode,
+        });
+      } else {
+        res.status(404).send('No product found');
+      }
+    })
+    .catch((err) => console.error(err.message));
 }
 
 export function editProduct(req: Request, res: Response) {
-  const { productId: id, title, imageUrl, description, price } = req.body;
-
-  const updatedProduct = new Product({
-    id,
-    title,
-    imageUrl,
-    description,
-    price,
-  });
-
-  updatedProduct.save();
-  res.status(204).end();
+  const { productId, title, imageUrl, description, price } = req.body;
+  Product.findByPk(productId)
+    .then((product) => {
+      if (product) {
+        product.title = title;
+        product.imageUrl = imageUrl;
+        product.description = description;
+        product.price = price;
+        return product.save();
+      } else {
+        res.status(404).send('Product not found');
+      }
+    })
+    .then((result) => {
+      console.log('PRODUCT UPDATED');
+      res.status(204).redirect('/admin/products');
+    })
+    .catch((err) => {
+      console.error(err.message);
+      res.status(500).send('Something went wrong!');
+    });
 }
 
 export function deleteProduct(req: Request, res: Response) {
   const { productId } = req.body;
 
-  Product.deleteById(productId);
-  res.status(204).redirect('/admin/products');
+  Product.findByPk(productId)
+    .then((product) => {
+      if (product) {
+        return product.destroy();
+      } else {
+        res.send('Product not found');
+      }
+    })
+    .then((result) => {
+      console.log('PRODUCT DELETED');
+      res.status(204).redirect('/admin/products');
+    })
+    .catch((err) => {
+      console.error(err.message);
+      res.status(500).send('Failed to delete product');
+    });
 }

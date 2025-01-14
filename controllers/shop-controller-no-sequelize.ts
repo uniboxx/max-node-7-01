@@ -1,44 +1,45 @@
 import type { Request, Response } from 'express';
-import { Product } from '../models/product';
+import { Product, type ProductType } from '../models/product';
 import { Cart } from '../models/cart';
+import type { FieldPacket, QueryResult } from 'mysql2';
 
 export function getIndex(_: Request, res: Response) {
-  Product.findAll()
-    .then((products) => {
+  // Product.fetchAll((products) => {
+  Product.fetchAll()
+    .then(([rows, _]) => {
       res.render('shop/index', {
-        products,
+        products: rows,
         pageTitle: 'Shop',
         path: '/',
       });
     })
-    .catch((err) => console.error(err.message));
+    .catch((err: Error) => console.error(err.message));
 }
 
 export function getProducts(_: Request, res: Response) {
-  Product.findAll()
-    .then((products) => {
+  // Product.fetchAll((products) => {
+  Product.fetchAll()
+    .then(([rows, _]) => {
       res.render('shop/product-list', {
-        products,
+        products: rows,
         pageTitle: 'All Products',
         path: '/products',
       });
     })
-    .catch((err) => console.error(err.message));
+    .catch((err: Error) => console.error(err.message));
 }
 
 export function getProduct(req: Request, res: Response) {
-  const { productId } = req.params;
-  Product.findByPk(productId)
-    .then((product) => {
-      if (product) {
-        res.render('shop/product-detail', {
-          product,
-          pageTitle: product.title,
-          path: '/products',
-        });
-      } else {
-        res.status(404).send('Product not found');
-      }
+  const productId = req.params.productId;
+  Product.findById(productId)
+    .then(([row]) => {
+      const [product] = row[0];
+      console.log(product);
+      res.render('shop/product-detail', {
+        product,
+        pageTitle: product?.title,
+        path: '/products',
+      });
     })
     .catch((err) => console.error(err.message));
 }
