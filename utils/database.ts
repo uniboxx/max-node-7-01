@@ -8,11 +8,7 @@
 //   password: 'qfmsprlp',
 // });
 
-const NODE_ENV = Bun.env.NODE_ENV;
-
 import { Sequelize } from 'sequelize';
-
-console.log('database_name', Bun.env.DATABASE_NAME);
 
 export const sequelize = new Sequelize(
   Bun.env.DATABASE_NAME!,

@@ -1,17 +1,21 @@
 import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../utils/database';
 
-interface Product extends Model {
-  id: number;
+export interface ProductAttributes {
+  id?: number;
   title: string;
   price: number;
-  description: string;
   imageUrl: string;
+  description: string;
 }
 
-export const Product = sequelize.define<Product>('product', {
+export interface ProductInstance
+  extends Model<ProductAttributes>,
+    ProductAttributes {}
+
+export const Product = sequelize.define<ProductInstance>('product', {
   id: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.INTEGER.UNSIGNED,
     autoIncrement: true,
     allowNull: false,
     primaryKey: true,

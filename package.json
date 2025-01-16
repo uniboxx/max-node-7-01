@@ -19,6 +19,8 @@
     "express-xss-sanitizer": "^2.0.0",
     "mariadb": "^3.4.0",
     "nanoid": "^5.0.9",
-    "sequelize": "^6.37.5"
+    "reflect-metadata": "^0.2.2",
+    "sequelize": "^6.37.5",
+    "sequelize-typescript": "^2.1.6"
   }
 }

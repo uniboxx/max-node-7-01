@@ -1,7 +1,6 @@
 import type { Request, Response } from 'express';
-import { Product, type ProductType } from '../models/product';
+import { Product } from '../models/product';
 import { Cart } from '../models/cart';
-import type { FieldPacket, QueryResult } from 'mysql2';
 
 export function getIndex(_: Request, res: Response) {
   // Product.fetchAll((products) => {

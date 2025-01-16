@@ -1,20 +1,22 @@
 import type { Request, Response } from 'express';
 import { Product } from '../models/product';
 
-export function getProducts(_: Request, res: Response) {
-  Product.findAll()
-    .then((products) => {
-      if (products.length) {
-        res.render('admin/products', {
-          products,
-          pageTitle: 'Admin Products',
-          path: '/admin/products',
-        });
-      } else {
-        res.status(404).send('No Products found');
-      }
-    })
-    .catch((err) => console.error(err.message));
+export async function getProducts(req: Request, res: Response) {
+  // Product.findAll({ where: { userId: req.user.id } })
+  try {
+    const products = await req.user.getProducts();
+    if (products.length) {
+      res.render('admin/products', {
+        products,
+        pageTitle: 'Admin Products',
+        path: '/admin/products',
+      });
+    } else {
+      res.status(404).send('No Products found');
+    }
+  } catch (err: any) {
+    console.error(err.message);
+  }
 }
 
 export function getAddProduct(_: Request, res: Response) {
@@ -27,23 +29,26 @@ export function getAddProduct(_: Request, res: Response) {
   });
 }
 
-export function addProduct(req: Request, res: Response) {
-  const { title, imageUrl, description, price } = req.body;
-  if (!title || !imageUrl || !description || !price) {
-    return;
-  }
+export async function addProduct(req: Request, res: Response) {
+  try {
+    const { title, imageUrl, description, price } = req.body;
+    if (!title || !imageUrl || !description || !price) {
+      return;
+    }
 
-  Product.create({
-    title,
-    imageUrl,
-    description,
-    price,
-  })
-    .then((result) => {
-      console.log('PRODUCT CREATED');
-      res.status(204).redirect('/products');
-    })
-    .catch((err) => console.error(err.message));
+    const newProduct = await req.user.createProduct({
+      title,
+      imageUrl,
+      description,
+      price,
+    });
+    // console.log('product', product);
+
+    console.log('PRODUCT CREATED');
+    res.status(204).redirect('/products');
+  } catch (error: any) {
+    console.error(error.message);
+  }
 }
 
 export function getEditProduct(req: Request, res: Response) {

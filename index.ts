@@ -1,4 +1,8 @@
-import express from 'express';
+import express, {
+  type NextFunction,
+  type Request,
+  type Response,
+} from 'express';
 const { xss } = require('express-xss-sanitizer');
 
 import { getNotFound } from './controllers/404.ts';
@@ -6,6 +10,15 @@ import { getNotFound } from './controllers/404.ts';
 import { Router as shopRoutes } from './routes/shop-routes.ts';
 import { Router as adminRoutes } from './routes/admin-routes.ts';
 import { sequelize } from './utils/database.ts';
+import { User } from './models/user.ts';
+
+declare global {
+  namespace Express {
+    interface Request {
+      user: InstanceType<typeof User>;
+    }
+  }
+}
 
 const app = express();
 const port = 3000;
@@ -18,18 +31,47 @@ app.use(express.json());
 app.use(xss());
 app.use(express.static('public'));
 
+app.use((req: Request, _: Response, next: NextFunction) => {
+  User.findByPk(1)
+    .then((user) => {
+      if (user) {
+        req.user = user;
+        next();
+      } else {
+        throw new Error('User not found');
+      }
+    })
+    .catch((err) => {
+      console.error(err.message);
+    });
+});
+
 app.use(shopRoutes);
 app.use(adminRoutes);
 
 app.use('/', getNotFound);
 
+// Product.findByPk(2).then((product) => console.log(product));
+
 sequelize
+  // .sync({ force: true })
   .sync()
-  .then((result) => {
+  .then(() => {
+    return User.findByPk(1);
     // console.log(result);
+  })
+  .then((user) => {
+    if (!user) {
+      return User.create({ name: 'Unibox', email: 'unibox@duck.com' });
+    }
+    return user;
+  })
+
+  .then((user) => {
+    // console.log(user);
     app.listen(port, () => {
       console.log(`✅ Server is running on http://localhost:${port}`);
-      console.log(`You are in ${Bun.env.NODE_ENV?.toUpperCase()} mode`);
+      console.log(`✅ You are in ${Bun.env.NODE_ENV?.toUpperCase()} mode`);
     });
   })
   .catch((err) => console.error(err.message));
