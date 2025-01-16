@@ -5,15 +5,12 @@ export async function getProducts(req: Request, res: Response) {
   // Product.findAll({ where: { userId: req.user.id } })
   try {
     const products = await req.user.getProducts();
-    if (products.length) {
-      res.render('admin/products', {
-        products,
-        pageTitle: 'Admin Products',
-        path: '/admin/products',
-      });
-    } else {
-      res.status(404).send('No Products found');
-    }
+
+    res.render('admin/products', {
+      products,
+      pageTitle: 'Admin Products',
+      path: '/admin/products',
+    });
   } catch (err: any) {
     console.error(err.message);
   }
