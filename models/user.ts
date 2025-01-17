@@ -5,6 +5,8 @@ import {
   type ProductAttributes,
   type ProductInstance,
 } from './product';
+import { Cart, type CartInstance } from './cart';
+import { CartItem } from './cart-item';
 
 interface UserAttributes {
   id?: number;
@@ -13,8 +15,10 @@ interface UserAttributes {
 }
 
 export interface UserInstance extends Model<UserAttributes>, UserAttributes {
-  getProducts: () => Promise<ProductInstance[]>;
+  getProducts: (object?: {}) => Promise<ProductInstance[]>;
   createProduct: (Product: ProductAttributes) => Promise<ProductInstance>;
+  getCart: () => Promise<CartInstance>;
+  createCart: () => Promise<CartInstance>;
 }
 
 export const User = sequelize.define<UserInstance>('user', {
@@ -22,6 +26,7 @@ export const User = sequelize.define<UserInstance>('user', {
     type: DataTypes.INTEGER.UNSIGNED,
     autoIncrement: true,
     primaryKey: true,
+    allowNull: false,
   },
   name: {
     type: new DataTypes.STRING(128),
@@ -39,3 +44,7 @@ Product.belongsTo(User, {
   constraints: true,
   onDelete: 'CASCADE',
 });
+User.hasOne(Cart);
+Cart.belongsTo(User);
+Cart.belongsToMany(Product, { through: CartItem });
+Product.belongsToMany(Cart, { through: CartItem });

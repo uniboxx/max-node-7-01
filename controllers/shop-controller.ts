@@ -2,103 +2,134 @@ import type { Request, Response } from 'express';
 import { Product } from '../models/product';
 import { Cart } from '../models/cart';
 
-export function getIndex(_: Request, res: Response) {
-  Product.findAll()
-    .then((products) => {
-      res.render('shop/index', {
-        products,
-        pageTitle: 'Shop',
-        path: '/',
-      });
-    })
-    .catch((err) => console.error(err.message));
+export async function getIndex(_: Request, res: Response) {
+  try {
+    const products = await Product.findAll();
+
+    res.render('shop/index', {
+      products,
+      pageTitle: 'Shop',
+      path: '/',
+    });
+  } catch (error: any) {
+    console.error(error.message);
+  }
 }
 
-export function getProducts(_: Request, res: Response) {
-  Product.findAll()
-    .then((products) => {
-      res.render('shop/product-list', {
-        products,
-        pageTitle: 'All Products',
+export async function getProducts(_: Request, res: Response) {
+  try {
+    const products = await Product.findAll();
+    res.render('shop/product-list', {
+      products,
+      pageTitle: 'All Products',
+      path: '/products',
+    });
+  } catch (error: any) {
+    console.error(error.message);
+  }
+}
+
+export async function getProduct(req: Request, res: Response) {
+  try {
+    const { productId } = req.params;
+    const product = await Product.findByPk(productId);
+    if (product) {
+      res.render('shop/product-detail', {
+        product,
+        pageTitle: product.title,
         path: '/products',
       });
-    })
-    .catch((err) => console.error(err.message));
-}
-
-export function getProduct(req: Request, res: Response) {
-  const { productId } = req.params;
-  Product.findByPk(productId)
-    .then((product) => {
-      if (product) {
-        res.render('shop/product-detail', {
-          product,
-          pageTitle: product.title,
-          path: '/products',
-        });
-      } else {
-        res.status(404).send('Product not found');
-      }
-    })
-    .catch((err) => console.error(err.message));
-}
-
-export function getCart(_: Request, res: Response) {
-  Cart.getCart((cart) => {
-    interface cartProductType {
-      productData: ProductType;
-      qty: number;
+    } else {
+      res.status(404).redirect('/products');
     }
-    const cartProducts: cartProductType[] = [];
-    Product.fetchAll((products) => {
-      for (let product of products) {
-        const productData = cart.products.find(
-          (cartProduct) => cartProduct.id === product.id
-        );
-        if (productData) {
-          cartProducts.push({
-            productData: product,
-            qty: productData.quantity,
-          });
-        }
-      }
-      res.render('shop/cart', {
-        products: cartProducts,
-        totalPrice: cart.totalPrice,
-        pageTitle: 'Your Cart',
-        path: '/cart',
-      });
+  } catch (error: any) {
+    console.error(error.message);
+  }
+}
+
+export async function getCart(req: Request, res: Response) {
+  try {
+    const cart = await req.user.getCart();
+    // console.log('CART', cart);
+    const cartProducts = await cart.getProducts();
+    const totalPrice = cartProducts.reduce(
+      (sum, item: any) => (sum += item.price * item.cartItem.quantity),
+      0
+    );
+
+    res.render('shop/cart', {
+      cartProducts,
+      totalPrice,
+      pageTitle: 'Your Cart',
+      path: '/cart',
     });
-  });
+  } catch (error: any) {
+    console.error(error.message);
+  }
 }
 
-export function addToCart(req: Request, res: Response) {
+export async function addToCart(req: Request, res: Response) {
+  try {
+    const { productId } = req.body;
+    const cart = await req.user.getCart();
+    const cartProducts = await cart.getProducts({
+      where: { id: productId },
+    });
+    let cartProduct: any;
+    cartProduct = cartProducts.length && cartProducts[0];
+
+    let newQuantity = 1;
+    if (cartProduct) {
+      const oldQuantity = cartProduct.cartItem?.quantity;
+      newQuantity = oldQuantity + 1;
+    } else {
+      cartProduct = await Product.findByPk(productId);
+    }
+    cartProduct &&
+      cart.addProduct(cartProduct, { through: { quantity: newQuantity } });
+    res.redirect('/cart');
+  } catch (error: any) {
+    console.error(error.message);
+  }
+}
+
+export async function subtractToCart(req: Request, res: Response) {
+  try {
+    const { productId } = req.body;
+    const cart = await req.user.getCart();
+    const product: any = (
+      await cart.getProducts({ where: { id: productId } })
+    )[0];
+    console.log('product', product);
+    product.cartItem.quantity--;
+    product.cartItem.save();
+    res.status(204).end();
+  } catch (error: any) {
+    console.error(error.message);
+  }
+}
+
+export async function removeFromCart(req: Request, res: Response) {
   const { productId } = req.body;
-  Product.findById(productId, (product) => {
-    product && Cart.addProduct(productId, product.price);
-  });
-  res.redirect('/cart');
-}
+  const cart = await req.user.getCart();
+  const product: any = (
+    await cart.getProducts({ where: { id: productId } })
+  )[0];
 
-export function subtractToCart(req: Request, res: Response) {
-  const { productId, productPrice } = req.body;
-
-  Cart.subtractProduct(productId, productPrice);
+  await product.cartItem.destroy();
   res.status(204).end();
 }
 
-export function removeFromCart(req: Request, res: Response) {
-  const { productId, productPrice } = req.body;
+export async function additionToCart(req: Request, res: Response) {
+  const cart = await req.user.getCart();
 
-  // Cart.subtractProduct(productId, productPrice);
-  Cart.deleteProduct(productId, productPrice);
-  res.status(204).end();
-}
+  const { productId } = req.body;
+  const product: any = (
+    await cart.getProducts({ where: { id: productId } })
+  )[0];
 
-export function additionToCart(req: Request, res: Response) {
-  const { productId, productPrice } = req.body;
-
-  Cart.additionProduct(productId, productPrice);
+  product.cartItem.quantity++;
+  product.cartItem.save();
   res.status(204).end();
 }
 

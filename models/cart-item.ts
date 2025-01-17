@@ -1,5 +1,6 @@
-import { DataTypes, Model } from 'sequelize';
+import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../utils/database';
+import { Product } from './product';
 
 interface CartItemAttributes {
   id?: number;
@@ -10,14 +11,14 @@ export interface CartItemInstance
   extends Model<CartItemAttributes>,
     CartItemAttributes {}
 
-export const CartItem = sequelize.define('cartItem', {
+export const CartItem = sequelize.define<CartItemInstance>('cartItem', {
   id: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
+    type: DataTypes.INTEGER.UNSIGNED,
     autoIncrement: true,
     primaryKey: true,
+    allowNull: false,
   },
   quantity: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.INTEGER.UNSIGNED,
   },
 });

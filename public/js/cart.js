@@ -4,7 +4,7 @@ const addBtns = document.querySelectorAll('.add');
 const totalPriceEl = document.getElementById('totalPrice');
 const totalPartialEls = document.querySelectorAll('.totalPartial');
 
-let totalPrice = +totalPriceEl.textContent;
+let totalPrice = +totalPriceEl?.textContent;
 
 const quantities = Array.from(quantityEls).map(
   (item) => +item.dataset.quantity

@@ -8,7 +8,7 @@
   <main class="centered">
     <h1>Cart</h1>
     <hr>
-    <% if(products.length>0) { %>
+    <% if(cartProducts.length>0) { %>
     <table>
       <thead>
         <tr>
@@ -19,13 +19,14 @@
         </tr>
       </thead>
       <tbody>
-        <% for (let product of products) { %>
-        <% if(product.qty>0) { %>
+        <% for (let product of cartProducts) { %>
+        <% if(product.cartItem.quantity>0) { %>
         <tr>
-          <td><%= product.productData.title  %></td>
-          <td>€ <%= Number(product.productData.price).toFixed(2) %></td>
-          <td><span class="quantity" data-id="<%= product.productData.id %>" data-quantity="<%= product.qty %>" data-product-price="<%= product.productData.price %>"><%= product.qty %></span><button class="subtract">&dash;</button> <button class="add">+</button></td>
-          <td>€ <span class="totalPartial"><%= Number(product.productData.price*product.qty).toFixed(2) %></span></td>
+          <td><%= product.title  %></td>
+          <td>€ <%= Number(product.price).toFixed(2) %></td>
+          <td><span class="quantity" data-id="<%= product.id %>" data-quantity="<%= product.cartItem.quantity %>" data-product-price="<%= product.price %>"><%= product.cartItem.quantity %></span><button class="subtract">&dash;</button> <button class="add">+</button></td>
+          <td>€ <span class="totalPartial"><%= Number(product.price*product.cartItem.quantity).toFixed(2) %></span></td>
+
         </tr>
         <% } %>
         <% } %>
@@ -35,7 +36,9 @@
           <td></td>
           <td></td>
           <td>Total</td>
-          <td>€ <span id="totalPrice"><%= Number(totalPrice).toFixed(2) %></span></td>
+          <td>
+            € <span id="totalPrice"><%= Number(totalPrice).toFixed(2) %></span>
+          </td>
         </tr>
       </tfoot>
     </table>

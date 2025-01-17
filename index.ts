@@ -10,12 +10,13 @@ import { getNotFound } from './controllers/404.ts';
 import { Router as shopRoutes } from './routes/shop-routes.ts';
 import { Router as adminRoutes } from './routes/admin-routes.ts';
 import { sequelize } from './utils/database.ts';
-import { User } from './models/user.ts';
+import { User, type UserInstance } from './models/user.ts';
 
 declare global {
   namespace Express {
     interface Request {
-      user: InstanceType<typeof User>;
+      // user: InstanceType<typeof User>;
+      user: UserInstance;
     }
   }
 }
@@ -69,6 +70,12 @@ sequelize
 
   .then((user) => {
     // console.log(user);
+    return { user, cart: user.getCart() };
+  })
+  .then(({ user, cart }) => {
+    if (!cart) user.createCart();
+  })
+  .then(() => {
     app.listen(port, () => {
       console.log(`✅ Server is running on http://localhost:${port}`);
       console.log(`✅ You are in ${Bun.env.NODE_ENV?.toUpperCase()} mode`);
