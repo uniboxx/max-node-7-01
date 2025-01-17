@@ -7,6 +7,7 @@ import {
 } from './product';
 import { Cart, type CartInstance } from './cart';
 import { CartItem } from './cart-item';
+import { Order } from './order';
 
 interface UserAttributes {
   id?: number;
@@ -48,3 +49,6 @@ User.hasOne(Cart);
 Cart.belongsTo(User);
 Cart.belongsToMany(Product, { through: CartItem });
 Product.belongsToMany(Cart, { through: CartItem });
+Order.belongsTo(User);
+User.hasMany(Order);
+Order.belongsToMany(pro);
