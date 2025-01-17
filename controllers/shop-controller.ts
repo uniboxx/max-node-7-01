@@ -50,12 +50,13 @@ export async function getProduct(req: Request, res: Response) {
 export async function getCart(req: Request, res: Response) {
   try {
     const cart = await req.user.getCart();
-    // console.log('CART', cart);
+    console.log('CART', cart);
     const cartProducts = await cart.getProducts();
-    const totalPrice = cartProducts.reduce(
-      (sum, item: any) => (sum += item.price * item.cartItem.quantity),
-      0
-    );
+    const totalPrice =
+      cartProducts?.reduce(
+        (sum, item: any) => (sum += item.price * item.cartItem.quantity),
+        0
+      ) || 0;
 
     res.render('shop/cart', {
       cartProducts,

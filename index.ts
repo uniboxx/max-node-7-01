@@ -69,13 +69,20 @@ sequelize
   })
 
   .then((user) => {
-    // console.log(user);
-    return { user, cart: user.getCart() };
+    // console.log('USER', user);
+
+    const cart = Promise.resolve(user.getCart());
+    return { user, cart };
   })
   .then(({ user, cart }) => {
-    if (!cart) user.createCart();
+    // console.log('CART 1', cart);
+
+    // return user.createCart();
+
+    return cart;
   })
-  .then(() => {
+  .then((cart) => {
+    // console.log('CART 2', cart);
     app.listen(port, () => {
       console.log(`✅ Server is running on http://localhost:${port}`);
       console.log(`✅ You are in ${Bun.env.NODE_ENV?.toUpperCase()} mode`);

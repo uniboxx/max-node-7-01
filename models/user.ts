@@ -8,6 +8,7 @@ import {
 import { Cart, type CartInstance } from './cart';
 import { CartItem } from './cart-item';
 import { Order } from './order';
+import { OrderItem } from './order-item';
 
 interface UserAttributes {
   id?: number;
@@ -51,4 +52,4 @@ Cart.belongsToMany(Product, { through: CartItem });
 Product.belongsToMany(Cart, { through: CartItem });
 Order.belongsTo(User);
 User.hasMany(Order);
-Order.belongsToMany(pro);
+Order.belongsToMany(Product, { through: OrderItem });
