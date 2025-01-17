@@ -7,7 +7,7 @@ import {
 } from './product';
 import { Cart, type CartInstance } from './cart';
 import { CartItem } from './cart-item';
-import { Order } from './order';
+import { Order, type OrderInstance } from './order';
 import { OrderItem } from './order-item';
 
 interface UserAttributes {
@@ -21,6 +21,8 @@ export interface UserInstance extends Model<UserAttributes>, UserAttributes {
   createProduct: (Product: ProductAttributes) => Promise<ProductInstance>;
   getCart: () => Promise<CartInstance>;
   createCart: () => Promise<CartInstance>;
+  createOrder: () => Promise<OrderInstance>;
+  getOrders: (options?: {}) => Promise<OrderInstance[]>;
 }
 
 export const User = sequelize.define<UserInstance>('user', {

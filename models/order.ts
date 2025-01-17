@@ -1,13 +1,17 @@
 import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../utils/database';
+import type { ProductInstance } from './product';
 
 interface OrderAttributes {
   id?: number;
 }
 
-export interface OrderInstance
-  extends Model<OrderAttributes>,
-    OrderAttributes {}
+export interface OrderInstance extends Model<OrderAttributes>, OrderAttributes {
+  addProducts: (
+    products: ProductInstance[],
+    options?: {}
+  ) => Promise<ProductInstance[]>;
+}
 
 export const Order = sequelize.define<OrderInstance>('order', {
   id: {

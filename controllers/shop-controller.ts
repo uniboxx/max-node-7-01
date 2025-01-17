@@ -134,11 +134,37 @@ export async function additionToCart(req: Request, res: Response) {
   res.status(204).end();
 }
 
-export function getOrders(_: Request, res: Response) {
-  res.render('shop/orders', {
-    pageTitle: 'Your orders',
-    path: '/orders',
-  });
+export async function createOrder(req: Request, res: Response) {
+  try {
+    const cart = await req.user.getCart();
+    const products = await cart.getProducts();
+    // console.log('PRODUCTS', products);
+    const order = await req.user.createOrder();
+    const orderProducts = order.addProducts(
+      products.map((product: any) => {
+        product.orderItem = { quantity: product.cartItem.quantity };
+        return product;
+      })
+    );
+    cart.setProducts(null);
+    res.redirect('/orders');
+  } catch (error: any) {
+    console.error(error.message);
+  }
+}
+
+export async function getOrders(req: Request, res: Response) {
+  try {
+    const orders = await req.user.getOrders({ include: ['products'] });
+    res.render('shop/orders', {
+      orders,
+      pageTitle: 'Your orders',
+      path: '/orders',
+    });
+    console.log('ORDERS', orders);
+  } catch (error: any) {
+    console.error(error.message);
+  }
 }
 
 export function getCheckout(_: Request, res: Response) {

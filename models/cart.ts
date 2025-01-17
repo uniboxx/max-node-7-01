@@ -12,6 +12,7 @@ export interface CartInstance extends Model<CartAttributes>, CartAttributes {
     product: ProductAttributes,
     other: {}
   ) => Promise<ProductInstance>;
+  setProducts: (object: any) => Promise<ProductInstance[]>;
 }
 
 export const Cart = sequelize.define<CartInstance>('cart', {

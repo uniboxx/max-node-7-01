@@ -58,21 +58,16 @@ sequelize
   // .sync({ force: true })
   .sync()
   .then(() => {
-    return User.findByPk(1);
-    // console.log(result);
+    return (
+      User.findByPk(1) ||
+      User.create({ name: 'Unibox', email: 'unibox@duck.com' })
+    );
   })
   .then((user) => {
-    if (!user) {
-      return User.create({ name: 'Unibox', email: 'unibox@duck.com' });
-    }
-    return user;
+    return user?.getCart() || user?.createCart();
   })
-
-  // .then((user) => {
-  //   return user.createCart();
-  // })
-  .then(() => {
-    // console.log('CART 2', cart);
+  .then((cart) => {
+    console.log('CART', cart?.id);
     app.listen(port, () => {
       console.log(`✅ Server is running on http://localhost:${port}`);
       console.log(`✅ You are in ${Bun.env.NODE_ENV?.toUpperCase()} mode`);
