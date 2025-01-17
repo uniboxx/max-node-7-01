@@ -68,20 +68,10 @@ sequelize
     return user;
   })
 
-  .then((user) => {
-    // console.log('USER', user);
-
-    const cart = Promise.resolve(user.getCart());
-    return { user, cart };
-  })
-  .then(({ user, cart }) => {
-    // console.log('CART 1', cart);
-
-    // return user.createCart();
-
-    return cart;
-  })
-  .then((cart) => {
+  // .then((user) => {
+  //   return user.createCart();
+  // })
+  .then(() => {
     // console.log('CART 2', cart);
     app.listen(port, () => {
       console.log(`✅ Server is running on http://localhost:${port}`);
