@@ -1,5 +1,5 @@
-import { Model, DataTypes } from 'sequelize';
-import { sequelize } from '../utils/database';
+
+
 
 interface OrderItemAttributes {
   id?: number;

@@ -1,41 +1,32 @@
-//- WHITOUT SEQUELIZE
-// import mysql from 'mysql2/promise';
+import { MongoClient, Db } from 'mongodb';
+import Bun from 'bun';
+// Connect to MongoDB
 
-// export const pool = mysql.createPool({
-//   host: 'localhost',
-//   user: 'daw',
-//   database: 'node_complete',
-//   password: 'qfmsprlp',
-// });
+let db: Db;
 
-import { Sequelize } from 'sequelize';
-
-export const sequelize = new Sequelize(
-  Bun.env.DATABASE_NAME!,
-  Bun.env.DATABASE_USERNAME!,
-  Bun.env.DATABASE_PASSWORD!,
-  {
-    dialect: 'mariadb',
-    host: Bun.env.DATABASE_HOST!,
+export async function mongoConnect() {
+  try {
+    const url = Bun.env.MONGO_CONNECTION_STRING;
+    const dbName = Bun.env.MONGO_DB_NAME;
+    if (url) {
+      const client = new MongoClient(url);
+      await client.connect();
+      console.log('✅ Connected to MongoDB');
+      db = client.db(dbName);
+      const products = db.collection('products');
+      return client;
+    } else {
+      console.error('❌ MongoDB connection string not found');
+    }
+  } catch (error: any) {
+    console.error(error.message);
+    throw error;
   }
-);
+}
 
-// export async function syncSequelize() {
-//   try {
-//     // .sync({ force: true })
-//     sequelize
-//       .sync()
-//       .then((user) => {
-//         return User.findByPk(1);
-//       })
-//       .then((user) => {
-//         // console.log(user);
-//         if (!user) {
-//           User.create({ name: 'Unibox', email: 'unibox@duck.com' });
-//         }
-//         user?.createCart();
-//       });
-//   } catch (error: any) {
-//     console.error(error.message);
-//   }
-// }
+export function getDb() {
+  if (db) {
+    return db;
+  }
+  throw 'No database found!';
+}

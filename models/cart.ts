@@ -1,5 +1,3 @@
-import { Model, DataTypes } from 'sequelize';
-import { sequelize } from '../utils/database';
 import type { ProductAttributes, ProductInstance } from './product';
 
 interface CartAttributes {

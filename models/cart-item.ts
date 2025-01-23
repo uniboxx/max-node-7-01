@@ -1,5 +1,4 @@
-import { Model, DataTypes } from 'sequelize';
-import { sequelize } from '../utils/database';
+
 import { Product } from './product';
 
 interface CartItemAttributes {

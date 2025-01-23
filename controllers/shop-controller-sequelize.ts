@@ -1,14 +1,8 @@
 import type { Request, Response } from 'express';
-import { Product } from '../models/product';
 
 export async function getIndex(_: Request, res: Response) {
   try {
-    const products = await Product.fetchAll();
-    res.render('shop/index', {
-      products,
-      pageTitle: 'Shop',
-      path: '/',
-    });
+    res.send('<h1>HELLO WORLD</h1>');
   } catch (error: any) {
     console.error(error.message);
   }
@@ -16,12 +10,6 @@ export async function getIndex(_: Request, res: Response) {
 
 export async function getProducts(_: Request, res: Response) {
   try {
-    const products = await Product.fetchAll();
-    res.render('shop/product-list', {
-      products,
-      pageTitle: 'All Products',
-      path: 'product-list',
-    });
   } catch (error: any) {
     console.error(error.message);
   }

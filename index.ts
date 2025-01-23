@@ -1,25 +1,11 @@
-import express, {
-  type NextFunction,
-  type Request,
-  type Response,
-} from 'express';
-const { xss } = require('express-xss-sanitizer');
+import express, { type NextFunction, type Response } from 'express';
+import helmet from 'helmet';
 
 import { getNotFound } from './controllers/404.ts';
 
 import { Router as shopRoutes } from './routes/shop-routes.ts';
 import { Router as adminRoutes } from './routes/admin-routes.ts';
-import { sequelize } from './utils/database.ts';
-import { User, type UserInstance } from './models/user.ts';
-
-declare global {
-  namespace Express {
-    interface Request {
-      // user: InstanceType<typeof User>;
-      user: UserInstance;
-    }
-  }
-}
+import { mongoConnect } from './utils/database.ts';
 
 const app = express();
 const port = 3000;
@@ -29,48 +15,34 @@ app.set('views', 'views');
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(xss());
-app.use(express.static('public'));
+// app.use(
+//   helmet({
+//     contentSecurityPolicy: {
+//       directives: {
+//         defaultSrc: ["'self'"],
+//         styleSrc: ["'self'", "'unsafe-inline'"],
+//         scriptSrc: ["'self'", "'unsafe-inline'"],
+//         imgSrc: ["'self'", 'https://plus.unsplash.com'],
+//       },
+//     },
+//   })
+// );
 
-app.use((req: Request, _: Response, next: NextFunction) => {
-  User.findByPk(1)
-    .then((user) => {
-      if (user) {
-        req.user = user;
-        next();
-      } else {
-        throw new Error('User not found');
-      }
-    })
-    .catch((err) => {
-      console.error(err.message);
-    });
-});
+// app.use('/', (_, res: Response, next: NextFunction) => {
+//   res.send('<script>alert("HELMET NOT WORKING!!!")</script>');
+//   next();
+// });
+app.use(express.static('public'));
 
 app.use(shopRoutes);
 app.use(adminRoutes);
 
 app.use('/', getNotFound);
 
-// Product.findByPk(2).then((product) => console.log(product));
-
-sequelize
-  // .sync({ force: true })
-  .sync()
-  .then(() => {
-    return (
-      User.findByPk(1) ||
-      User.create({ name: 'Unibox', email: 'unibox@duck.com' })
-    );
-  })
-  .then((user) => {
-    return user?.getCart() || user?.createCart();
-  })
-  .then((cart) => {
-    console.log('CART', cart?.id);
-    app.listen(port, () => {
-      console.log(`✅ Server is running on http://localhost:${port}`);
-      console.log(`✅ You are in ${Bun.env.NODE_ENV?.toUpperCase()} mode`);
-    });
-  })
-  .catch((err) => console.error(err.message));
+mongoConnect().then((client) => {
+  app.listen(port, () => {
+    // console.log(client);
+    console.log(`✅ Server is running on http://localhost:${port}`);
+    console.log(`✅ You are in ${Bun.env.NODE_ENV?.toUpperCase()} mode`);
+  });
+});
